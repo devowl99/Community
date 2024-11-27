@@ -2,7 +2,7 @@ package community.community.Controller;
 
 import community.community.Domain.User;
 import community.community.Service.UserService;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession; // 세션 활용
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -24,7 +24,7 @@ public class UserService {
         // 사용자 저장
         User user = new User();
         user.setUsername(username);
-        user.setPassword(password); // 이후 Spring Security의 BCryptPasswordEncoder를 통해 암호화 가능
+        user.setPassword(password); // Spring Security의 BCryptPasswordEncoder를 통해 암호화 가능
         return userRepository.save(user);
     }
 
@@ -32,7 +32,7 @@ public class UserService {
         // 사용자 인증
         Optional<User> userOptional = userRepository.findByUsername(username);
         if (userOptional.isEmpty() || !userOptional.get().getPassword().equals(password)) {
-            throw new IllegalArgumentException("아이디 또는 비밀번호가 잘못되었습니다.");
+            throw new IllegalArgumentException("아이디 또는 비밀번호가 일치하지 않습니다.");
         }
 
         return userOptional.get();
