@@ -1,5 +1,7 @@
 package community.community.Controller;
 
+import community.community.DTO.PostRequest;
+import community.community.DTO.PostResponse;
 import community.community.Domain.Post;
 import community.community.Domain.User;
 import community.community.Service.PostService;
@@ -18,18 +20,102 @@ public class PostController {
         this.postService = postService;
     }
 
+    /**
+     * 게시글 생성
+     * POST /api/post
+     * @param postRequest
+     * @param session
+     * @return
+     */
     @PostMapping
-    public ResponseEntity<?> createPost(@RequestBody Post post, HttpSession session) {
-        User user = (User) session.getAttribute("user");
+    public ResponseEntity<?> createPost(@RequestBody PostRequest postRequest, HttpSession session) {
+        var user = session.getAttribute("user");
         if (user == null) {
             return ResponseEntity.status(401).body("로그인이 필요합니다.");
         }
-        Post createdPost = postService.createPost(post.getTitle(), post.getContent(), user.getId());
-        return ResponseEntity.ok(createdPost);
+        var loggedInUser = (community.community.Domain.User) user;
+        postService.createPost(postRequest.getTitle(), postRequest.getContent(), loggedInUser.getId());
+        return ResponseEntity.ok("게시글이 성공적으로 생성되었습니다.");
     }
 
+    /**
+     * 전체 게시글 조회
+     * GET /api/post
+     * @return
+     */
     @GetMapping
-    public ResponseEntity<List<Post>> getAllPosts() {
-        return ResponseEntity.ok(postService.getAllPosts());
+    public ResponseEntity<List<PostResponse>> getAllPosts() {
+        List<PostResponse> posts = postService.getAllPosts();
+        return ResponseEntity.ok(posts);
     }
+
+    /**
+     * 특정 게시글 조회
+     * GET /api/post/{id}
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getPostById(@PathVariable Long id) {
+        PostResponse post = postService.getPostById(id);
+        return ResponseEntity.ok(post);
+    }
+
+    /**
+     * 내 게시글 조회
+     * GET /api/post/my
+     * @param session
+     * @return
+     */
+    @GetMapping("/my")
+    public ResponseEntity<List<PostResponse>> getMyPosts(HttpSession session) {
+        var user = session.getAttribute("user");
+        if (user == null) {
+            return ResponseEntity.status(401).body(null); // 로그인 필요
+        }
+        var loggedInUser = (User) user;
+        List<PostResponse> myPosts = postService.getPostsByUserId(loggedInUser.getId());
+        return ResponseEntity.ok(myPosts);
+    }
+
+    /**
+     * 게시글 수정
+     * PUT /api/post/{id}
+     * @param id
+     * @param postRequest
+     * @param session
+     * @return
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updatePost(
+            @PathVariable Long id,
+            @RequestBody PostRequest postRequest,
+            HttpSession session) {
+        var user = session.getAttribute("user");
+        if (user == null) {
+            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        }
+        var loggedInUser = (User) user;
+        postService.updatePost(id, postRequest.getTitle(), postRequest.getContent(), loggedInUser.getId());
+        return ResponseEntity.ok("게시글이 성공적으로 수정되었습니다.");
+    }
+
+    /**
+     * 게시글 삭제
+     * DELETE /api/post/{id}
+     * @param id
+     * @param session
+     * @return
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePost(@PathVariable Long id, HttpSession session) {
+        var user = session.getAttribute("user");
+        if (user == null) {
+            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        }
+        var loggedInUser = (User) user;
+        postService.deletePost(id, loggedInUser.getId());
+        return ResponseEntity.ok("게시글이 성공적으로 삭제되었습니다.");
+    }
+
 }
