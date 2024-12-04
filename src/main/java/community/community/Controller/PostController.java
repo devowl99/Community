@@ -1,5 +1,6 @@
 package community.community.Controller;
 
+import community.community.DTO.DetailedPostResponse;
 import community.community.DTO.PostRequest;
 import community.community.DTO.PostResponse;
 import community.community.Domain.Post;
@@ -29,7 +30,7 @@ public class PostController {
      */
     @PostMapping
     public ResponseEntity<?> createPost(@RequestBody PostRequest postRequest, HttpSession session) {
-        var user = session.getAttribute("user");
+        var user = session.getAttribute("user"); // var : Java 10에서 도입된 지역 변수 타입 추론 키워드 (명시적 타입 지정 X)
         if (user == null) {
             return ResponseEntity.status(401).body("로그인이 필요합니다.");
         }
@@ -56,9 +57,8 @@ public class PostController {
      * @return
      */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPostById(@PathVariable Long id) {
-        PostResponse post = postService.getPostById(id);
-        return ResponseEntity.ok(post);
+    public ResponseEntity<DetailedPostResponse> getPostById(@PathVariable Long id) {
+        return ResponseEntity.ok(postService.getPostById(id));
     }
 
     /**

@@ -1,10 +1,17 @@
 package community.community.Service;
 
 import community.community.Domain.Post;
+import community.community.Domain.Comment;
 import community.community.Domain.User;
+
 import community.community.DTO.PostResponse;
+import community.community.DTO.CommentResponse;
+import community.community.DTO.DetailedPostResponse;
+
 import community.community.Repository.PostRepository;
 import community.community.Repository.UserRepository;
+import community.community.Repository.CommentRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,12 +21,15 @@ import java.util.stream.Collectors;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
     }
 
+    // 게시글 생성
     public Post createPost(String title, String content, Long userId) {
         User author = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
@@ -43,16 +53,28 @@ public class PostService {
     }
 
     // 특정 게시글 조회
-    public PostResponse getPostById(Long id) {
+    public DetailedPostResponse getPostById(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
-        return new PostResponse(
+
+        List<CommentResponse> comments = commentRepository.findByPostId(id).stream()
+                .map(comment -> new CommentResponse(
+                        comment.getId(),
+                        comment.getContent(),
+                        comment.getAuthor().getUsername(),
+                        comment.getPost().getId()
+                ))
+                .collect(Collectors.toList());
+
+        return new DetailedPostResponse(
                 post.getId(),
                 post.getTitle(),
                 post.getContent(),
-                post.getAuthor().getUsername()
+                post.getAuthor().getUsername(),
+                comments
         );
     }
+
 
     // 내 게시글 조회
     public List<PostResponse> getPostsByUserId(Long userId) {

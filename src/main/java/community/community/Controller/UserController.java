@@ -45,4 +45,17 @@ public class UserController {
         session.invalidate(); // 세션 무효화
         return ResponseEntity.ok("로그아웃 성공");
     }
+
+//    // 마이페이지 조회
+//    // GET /api/user/mypage
+//    @GetMapping("/mypage")
+//    public ResponseEntity<?> getMyPage(HttpSession session) {
+//        var user = session.getAttribute("user");
+//        if (user == null) {
+//            return ResponseEntity.status(401).body("로그인이 필요합니다."); // 비로그인 시 처리
+//        }
+//
+//        var loggedInUser = (User) user;
+//        return ResponseEntity.ok(loggedInUser); // 사용자 정보 반환
+//    }
 }
