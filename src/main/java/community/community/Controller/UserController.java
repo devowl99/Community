@@ -16,16 +16,20 @@ public class UserController {
         this.userService = userService;
     }
 
-    // 회원가입
-    // api/user/register
+    /**
+     * 회원가입
+     * POST api/user/register
+     */
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody User user) {
         userService.register(user.getUsername(), user.getPassword());
         return ResponseEntity.ok("회원가입 성공");
     }
 
-    // 로그인
-    // api/user/login
+    /**
+     * 로그인
+     * POST api/user/login
+     */
     @PostMapping("/login")
     public ResponseEntity<String> login(
             @RequestBody User user,
@@ -36,16 +40,20 @@ public class UserController {
         return ResponseEntity.ok("로그인 성공");
     }
 
-    // 로그아웃
-    // api/user/logout
+    /**
+     * 로그아웃
+     * POST api/user/logout
+     */
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpSession session) {
         session.invalidate(); // 세션 무효화
         return ResponseEntity.ok("로그아웃 성공");
     }
 
-    // 마이페이지 조회
-    // GET /api/user/mypage
+    /**
+     * 마이페이지 조회
+     * GET /api/user/mypage
+     */
     @GetMapping("/mypage")
     public ResponseEntity<?> getMyPage(HttpSession session) {
         var user = session.getAttribute("user");

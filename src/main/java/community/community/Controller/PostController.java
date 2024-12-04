@@ -24,9 +24,6 @@ public class PostController {
     /**
      * 게시글 생성
      * POST /api/post
-     * @param postRequest
-     * @param session
-     * @return
      */
     @PostMapping
     public ResponseEntity<?> createPost(@RequestBody PostRequest postRequest, HttpSession session) {
@@ -42,7 +39,6 @@ public class PostController {
     /**
      * 전체 게시글 조회
      * GET /api/post
-     * @return
      */
     @GetMapping
     public ResponseEntity<List<PostResponse>> getAllPosts() {
@@ -53,8 +49,6 @@ public class PostController {
     /**
      * 특정 게시글 조회
      * GET /api/post/{id}
-     * @param id
-     * @return
      */
     @GetMapping("/{id}")
     public ResponseEntity<DetailedPostResponse> getPostById(@PathVariable Long id) {
@@ -64,8 +58,6 @@ public class PostController {
     /**
      * 내 게시글 조회
      * GET /api/post/my
-     * @param session
-     * @return
      */
     @GetMapping("/my")
     public ResponseEntity<List<PostResponse>> getMyPosts(HttpSession session) {
@@ -81,10 +73,6 @@ public class PostController {
     /**
      * 게시글 수정
      * PUT /api/post/{id}
-     * @param id
-     * @param postRequest
-     * @param session
-     * @return
      */
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePost(
@@ -103,9 +91,6 @@ public class PostController {
     /**
      * 게시글 삭제
      * DELETE /api/post/{id}
-     * @param id
-     * @param session
-     * @return
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id, HttpSession session) {
