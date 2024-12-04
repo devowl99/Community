@@ -1,13 +1,11 @@
 package community.community.Controller;
 
+import community.community.DTO.UserResponse;
 import community.community.Domain.User;
 import community.community.Service.UserService;
 import jakarta.servlet.http.HttpSession; // 세션 활용
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/user")
@@ -46,16 +44,17 @@ public class UserController {
         return ResponseEntity.ok("로그아웃 성공");
     }
 
-//    // 마이페이지 조회
-//    // GET /api/user/mypage
-//    @GetMapping("/mypage")
-//    public ResponseEntity<?> getMyPage(HttpSession session) {
-//        var user = session.getAttribute("user");
-//        if (user == null) {
-//            return ResponseEntity.status(401).body("로그인이 필요합니다."); // 비로그인 시 처리
-//        }
-//
-//        var loggedInUser = (User) user;
-//        return ResponseEntity.ok(loggedInUser); // 사용자 정보 반환
-//    }
+    // 마이페이지 조회
+    // GET /api/user/mypage
+    @GetMapping("/mypage")
+    public ResponseEntity<?> getMyPage(HttpSession session) {
+        var user = session.getAttribute("user");
+        if (user == null) {
+            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        }
+
+        var loggedInUser = (User) user;
+        var userResponse = new UserResponse(loggedInUser.getId(), loggedInUser.getUsername());
+        return ResponseEntity.ok(userResponse);
+    }
 }
